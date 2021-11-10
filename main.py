@@ -9,7 +9,7 @@ def init_csv():
 	header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'dsk/total',  '','','', 'io/total', '', 'power est.']
 
 	# open the file in the write mode
-	f = open('test.csv', 'w')
+	f = open('data.csv', 'w')
 
 	# create the csv writer
 	writer = csv.writer(f)
