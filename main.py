@@ -81,8 +81,8 @@ def main(writer, dstat, powertop):
 					if x != 'error':
 						row.append(x.strip())
 				writer.writerow(row)
-                print(index, " : ", row)
-                index = index + 1
+				print(index, " : ", row)
+				index = index + 1
 
 
 if __name__ == "__main__":
