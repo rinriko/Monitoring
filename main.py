@@ -48,6 +48,7 @@ def power_est(powertop):
 		return ["error","error"]
 
 def main(writer, dstat, powertop):
+    index = 1
 	temp = re.compile("([0-9]+)([a-zA-Z]+)")
 	while True:
 		row = []
@@ -80,6 +81,8 @@ def main(writer, dstat, powertop):
 					if x != 'error':
 						row.append(x.strip())
 				writer.writerow(row)
+                print(index, " : ", row)
+                index = index + 1
 
 
 if __name__ == "__main__":
