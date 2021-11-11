@@ -18,8 +18,10 @@ INIT = sudo apt-get install
 help:
 	@echo "---------------HELP-----------------"
 	@echo "To first init the project type 'make init'"
-	@echo "To setup the project type 'make setup'"
-	@echo "To run the project type 'make run'"
+	@echo "To set up the project type 'make setup'"
+	@echo "To gathering data with unit type 'make run'"
+	@echo "To create csv file without unit type 'make run_unit'"
+	@echo "To run real-time monitoring type 'make monitor'"
 	@echo "------------------------------------"
 
 run:
