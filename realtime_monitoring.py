@@ -23,7 +23,7 @@ def init_csv():
 def init_powertop():
 	child = pexpect.spawnu('sudo powertop')
 	child.expect('password')
-	child.sendline('fb1234')
+	child.sendline('db1234')
 	child.expect('PowerTOP')
 	child.send('s')
 	child.expect('PowerTOP')
