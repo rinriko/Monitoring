@@ -23,7 +23,7 @@ def init_csv():
 def init_powertop():
 	child = pexpect.spawnu('sudo powertop')
 	child.expect('password')
-	child.sendline('P@ssw0rd')
+	child.sendline('fb1234')
 	child.expect('PowerTOP')
 	child.send('s')
 	child.expect('PowerTOP')
@@ -105,6 +105,8 @@ def main(writer, dstat, powertop):
 				result = [x.strip() for x in dstat_output_string.split('|')]
 				for r in result:
 					for x in r.split(' '):
+						if x == 'missed':
+							break
 						if x != '':
 							x = x.strip()
 							if x.isdigit():
