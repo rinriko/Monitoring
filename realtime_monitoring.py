@@ -2,23 +2,36 @@ import subprocess
 import shlex
 import csv
 import pexpect
+from multiprocessing import Process
+from datetime import datetime
 import re
+import os
 
-def init_csv():
-	subheader = ['date', 'time', 'usr', 'sys', 'idl', 'wait', 'stl', 'read', 'write', 'read', 'write', 'power est.']
-	header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'dsk/total', '', 'io/total', '', 'power est.']
+def init_csv_dstat():
+	subheader = ['date', 'time', 'usr', 'sys', 'idl', 'wait', 'stl', 'used', 'free', 'buff', 'cach', 'read', 'write', 'read', 'write', 'power est.']
+	header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'memory', 'usage', '', '', 'dsk/total', '', 'io/total', '', 'power est.']
 
 	# open the file in the write mode
-	f = open('monitor_data.csv', 'w')
+	file = open('dstat/monitor_dstat_data.csv', 'w')
 
 	# create the csv writer
-	writer = csv.writer(f)
-
-	# write a row to the csv file
-	#writer.writerow([header[0] + header[1]] + [header[2] + ' ' + header[3] + ' ' + header[4] + header[5] + header[6]] + [header[7] + header[8]] + [header[9] + header[10]] + header[11:])
+	writer = csv.writer(file)
 	writer.writerow(header)
 	writer.writerow(subheader)
-	return f, writer
+	return file, writer
+
+def init_csv_powertop():
+	subheader = ['date', 'time', 'power est.']
+	header = ['System', '', 'power est.']
+
+	# open the file in the write mode
+	file = open('powertop/monitor_powertop_data.csv', 'w')
+
+	# create the csv writer
+	writer = csv.writer(file)
+	writer.writerow(header)
+	writer.writerow(subheader)
+	return file, writer
 
 def init_powertop():
 	child = pexpect.spawnu('sudo powertop')
@@ -46,6 +59,7 @@ def power_est(powertop):
 	else:
 		print("error")
 		return ["error","error"]
+
 def compute_unit(res,unit):
 	value = 0
 	if unit == 'p':
@@ -89,9 +103,27 @@ def compute_unit(res,unit):
 		value = pow(10,12)
 	res = float(res) * value
 	return res
-	
 
-def main(writer, dstat, powertop):
+def powertop(writer, powertop):
+	print('Process id:', os.getpid(), ' === PowerTOP ===')
+	index = 1
+	while True:
+		row = []
+		res1, res2 = power_est(powertop)
+		if res1 != 'error' and res2 != 'error':
+			res = compute_unit(res1,res2)
+			row.append(res)
+		# datetime object containing current date and time
+		now = datetime.now()
+		# dd/mm/YY H:M:S
+		dt_string = now.strftime("%d-%m %H:%M:%S")
+		for x in dt_string.split(' '):
+			row.append(x.strip())
+		writer.writerow(row)
+		print(index, " : ", row)
+
+def dstat(writer, dstat):
+	print('Process id:', os.getpid(), ' === dstat ===')
 	index = 1
 	temp = re.compile("([0-9]+)([a-zA-Z]+)")
 	while True:
@@ -117,19 +149,24 @@ def main(writer, dstat, powertop):
 								res1, res2 = temp.match(x).groups()
 								res = compute_unit(res1,res2)
 								row.append(res)
-				res1, res2 = power_est(powertop)
-				if res1 != 'error' and res2 != 'error':
-					res = compute_unit(res1,res2)
-					row.append(res)
+				# res1, res2 = power_est(powertop)
+				# if res1 != 'error' and res2 != 'error':
+				# 	res = compute_unit(res1,res2)
+				# 	row.append(res)
 				writer.writerow(row)
 				print(index, " : ", row)
 				index = index + 1
 
 
 if __name__ == "__main__":
-    f, writer = init_csv()
-    powertop = init_powertop()
-    dstat = init_dstat()
-    main(writer, dstat, powertop)
-    dstat.poll()
-    f.close()
+    file_dstat, writer_dstat = init_csv_dstat()
+    file_pt, writer_pt = init_csv_powertop()
+    pt = init_powertop()
+    d = init_dstat()
+	p_pt = Process(target=powertop, args=(writer_pt, pt))
+	p_d = Process(target=dstat, args=(writer_dstat, d))
+	p_pt.start()
+	p_d.start()
+    d.poll()
+    file_dstat.close()
+    file_pt.close()
