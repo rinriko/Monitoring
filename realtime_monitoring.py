@@ -20,7 +20,7 @@ def init_csv_dstat():
 	return file, writer
 
 def init_csv_powertop():
-	subheader = ['time', 'power est.']
+	subheader = ['date', 'time', 'power est.']
 	#header = ['System', '', 'power est.']
 
 	# open the file in the write mode
@@ -114,8 +114,9 @@ def powertop():
 			# datetime object containing current date and time
 			now = datetime.now()
 			# dd/mm/YY H:M:S
-			dt_string = now.strftime("%H:%M:%S")
-			row.append(dt_string.strip())
+			dt_string = now.strftime("%d-%m %H:%M:%S")
+			for x in dt_string.split(' '):
+				row.append(x.strip())
 			#power est.
 			res1, res2 = power_est(powertop)
 			if res1 != 'error' and res2 != 'error':
