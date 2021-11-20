@@ -8,28 +8,28 @@ import re
 import os
 
 def init_csv_dstat():
-	subheader = ['date', 'time', 'usr', 'sys', 'idl', 'wait', 'stl', 'used', 'free', 'buff', 'cach', 'read', 'write', 'read', 'write', 'power est.']
-	header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'memory', 'usage', '', '', 'dsk/total', '', 'io/total', '', 'power est.']
+	subheader = ['date', 'time', 'usr', 'sys', 'idl', 'wait', 'stl', 'used', 'free', 'buff', 'cach', 'read', 'write', 'read', 'write']
+	#header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'memory', 'usage', '', '', 'dsk/total', '', 'io/total', '']
 
 	# open the file in the write mode
 	file = open('dstat/monitor_dstat_data.csv', 'w')
 
 	# create the csv writer
 	writer = csv.writer(file)
-	writer.writerow(header)
+	#writer.writerow(header)
 	writer.writerow(subheader)
 	return file, writer
 
 def init_csv_powertop():
 	subheader = ['date', 'time', 'power est.']
-	header = ['System', '', 'power est.']
+	#header = ['System', '', 'power est.']
 
 	# open the file in the write mode
 	file = open('powertop/monitor_powertop_data.csv', 'w')
 
 	# create the csv writer
 	writer = csv.writer(file)
-	writer.writerow(header)
+	#writer.writerow(header)
 	writer.writerow(subheader)
 	return file, writer
 
@@ -47,7 +47,7 @@ def init_powertop():
 
 def init_dstat():
 	# system time, total-cpu-usage, dsk/total, io/total
-	command = "dstat -tcdr" 
+	command = "dstat -tcmdr" 
 	process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
 	return process
 
