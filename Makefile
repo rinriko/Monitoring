@@ -26,7 +26,7 @@ help:
 all: init setup monitor
 
 merge:
-	${PYTHON} merge.py
+	${PYTHON} merge_data.py
 
 monitor:
 	${PYTHON} realtime_monitoring.py
