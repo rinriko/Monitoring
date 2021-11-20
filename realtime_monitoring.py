@@ -112,16 +112,17 @@ def powertop():
 	try:
 		while True:
 			row = []
-			res1, res2 = power_est(powertop)
-			if res1 != 'error' and res2 != 'error':
-				res = compute_unit(res1,res2)
-				row.append(res)
 			# datetime object containing current date and time
 			now = datetime.now()
 			# dd/mm/YY H:M:S
 			dt_string = now.strftime("%d-%m %H:%M:%S")
 			for x in dt_string.split(' '):
 				row.append(x.strip())
+			#power est.
+			res1, res2 = power_est(powertop)
+			if res1 != 'error' and res2 != 'error':
+				res = compute_unit(res1,res2)
+				row.append(res)
 			writer.writerow(row)
 			print(index, " : ", row)
 			index = index + 1
