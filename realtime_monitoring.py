@@ -178,4 +178,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("-----------------------------------------")
         process = subprocess.Popen(shlex.split('make merge'), stdout=subprocess.PIPE)
-        print("The output is in the output directory")
+        print("the output is in the directory named 'output'")
