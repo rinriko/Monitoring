@@ -8,27 +8,23 @@ INIT = sudo apt-get install
 
 # .PHONY defines parts of the makefile that are not dependant on any specific file
 # This is most often used to store functions
-.PHONY = help init setup run run_unit monitor
+.PHONY = help init setup monitor merge all
 
 # Defines the default target that `make` will to try to make, or in the case of a phony target, execute the specified commands
 # This target is executed whenever we just type `make`
-.DEFAULT_GOAL = help
+.DEFAULT_GOAL = all
 
 # The @ makes sure that the command itself isn't echoed in the terminal
 help:
 	@echo "---------------HELP-----------------"
 	@echo "To first init the project type 'make init'"
 	@echo "To set up the project type 'make setup'"
-	@echo "To gathering data with unit type 'make run'"
-	@echo "To create csv file without unit type 'make run_unit'"
 	@echo "To run real-time monitoring type 'make monitor'"
+	@echo "To merge csv files: dstat and powertop type 'make merge'"
 	@echo "------------------------------------"
 
-run:
-	${PYTHON} main.py
-
-run_unit:
-	${PYTHON} compute_unit.py
+merge:
+	${PYTHON} merge.py
 
 monitor:
 	${PYTHON} realtime_monitoring.py
@@ -38,3 +34,6 @@ setup:
 
 init:
 	${INIT} powertop dstat python3-pip
+
+all:
+	init setup monitor merge
