@@ -104,69 +104,70 @@ def compute_unit(res,unit):
 	res = float(res) * value
 	return res
 
-def powertop(writer, powertop):
+def powertop():
+	f, writer = init_csv_powertop()
+	powertop = init_powertop()
 	print('Process id:', os.getpid(), ' === PowerTOP ===')
 	index = 1
-	while True:
-		row = []
-		res1, res2 = power_est(powertop)
-		if res1 != 'error' and res2 != 'error':
-			res = compute_unit(res1,res2)
-			row.append(res)
-		# datetime object containing current date and time
-		now = datetime.now()
-		# dd/mm/YY H:M:S
-		dt_string = now.strftime("%d-%m %H:%M:%S")
-		for x in dt_string.split(' '):
-			row.append(x.strip())
-		writer.writerow(row)
-		print(index, " : ", row)
+	try:
+		while True:
+			row = []
+			res1, res2 = power_est(powertop)
+			if res1 != 'error' and res2 != 'error':
+				res = compute_unit(res1,res2)
+				row.append(res)
+			# datetime object containing current date and time
+			now = datetime.now()
+			# dd/mm/YY H:M:S
+			dt_string = now.strftime("%d-%m %H:%M:%S")
+			for x in dt_string.split(' '):
+				row.append(x.strip())
+			writer.writerow(row)
+			print(index, " : ", row)
+			index = index + 1
+	except KeyboardInterrupt:
+		f.close()
 
-def dstat(writer, dstat):
+def dstat():
+	f, writer = init_csv_dstat()
+	dstat = init_dstat()
 	print('Process id:', os.getpid(), ' === dstat ===')
 	index = 1
 	temp = re.compile("([0-9]+)([a-zA-Z]+)")
-	while True:
-		row = []
-		dstat_output = dstat.stdout.readline()
-		if dstat_output == '' and dstat.poll() is not None:
-			break
-		if dstat_output:
-			if "system" not in dstat_output.strip().decode("utf-8") and "time" not in dstat_output.strip().decode("utf-8"):
-				dstat_output_string = dstat_output.strip().decode("utf-8")
-				result = [x.strip() for x in dstat_output_string.split('|')]
-				for r in result:
-					for x in r.split(' '):
-						if x == 'missed':
-							break
-						if x != '':
-							x = x.strip()
-							if x.isdigit():
-								row.append(x)
-							elif "-" in x or ":" in x or x.replace('.', '', 1).isdigit():
-								row.append(x)
-							else:
-								res1, res2 = temp.match(x).groups()
-								res = compute_unit(res1,res2)
-								row.append(res)
-				# res1, res2 = power_est(powertop)
-				# if res1 != 'error' and res2 != 'error':
-				# 	res = compute_unit(res1,res2)
-				# 	row.append(res)
-				writer.writerow(row)
-				print(index, " : ", row)
-				index = index + 1
+	try:
+		while True:
+			row = []
+			dstat_output = dstat.stdout.readline()
+			if dstat_output == '' and dstat.poll() is not None:
+				break
+			if dstat_output:
+				if "system" not in dstat_output.strip().decode("utf-8") and "time" not in dstat_output.strip().decode("utf-8"):
+					dstat_output_string = dstat_output.strip().decode("utf-8")
+					result = [x.strip() for x in dstat_output_string.split('|')]
+					for r in result:
+						for x in r.split(' '):
+							if x == 'missed':
+								break
+							if x != '':
+								x = x.strip()
+								if x.isdigit():
+									row.append(x)
+								elif "-" in x or ":" in x or x.replace('.', '', 1).isdigit():
+									row.append(x)
+								else:
+									res1, res2 = temp.match(x).groups()
+									res = compute_unit(res1,res2)
+									row.append(res)
+					writer.writerow(row)
+					print(index, " : ", row)
+					index = index + 1
+	except KeyboardInterrupt:
+		dstat.poll()
+		f.close()
 
 
 if __name__ == "__main__":
-    file_dstat, writer_dstat = init_csv_dstat()
-    file_pt, writer_pt = init_csv_powertop()
-    pt = init_powertop()
-    d = init_dstat()
-    p_pt = Process(target=powertop, args=(writer_pt, pt))
-    p_d = Process(target=dstat, args=(writer_dstat, d))
+    p_pt = Process(target=powertop)
+    p_d = Process(target=dstat)
     p_pt.start()
     p_d.start()
-    d.poll()
-    file_dstat.close()
-    file_pt.close()
