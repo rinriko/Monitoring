@@ -8,8 +8,7 @@ import re
 import os
 
 def init_csv_dstat():
-	subheader = ['date', 'time', 'usr', 'sys', 'idl', 'wait', 'stl', 'used', 'free', 'buff', 'cach', 'read', 'write', 'read', 'write']
-	#header = ['System', '', 'Total', 'cpu', 'usage', '', '', 'memory', 'usage', '', '', 'dsk/total', '', 'io/total', '']
+	subheader = ['date', 'time', 'cpu.usr', 'cpu.sys', 'cpu.idl', 'cpu.wait', 'cpu.stl', 'memory.used', 'memory.free', 'memory.buff', 'memory.cach', 'dsk/total.read', 'dsk/total.write', 'io/total.read', 'io/total.write']
 
 	# open the file in the write mode
 	file = open('dstat/monitor_dstat_data.csv', 'w')
@@ -21,7 +20,7 @@ def init_csv_dstat():
 	return file, writer
 
 def init_csv_powertop():
-	subheader = ['date', 'time', 'power est.']
+	subheader = ['time', 'power est.']
 	#header = ['System', '', 'power est.']
 
 	# open the file in the write mode
@@ -107,7 +106,7 @@ def compute_unit(res,unit):
 def powertop():
 	f, writer = init_csv_powertop()
 	powertop = init_powertop()
-	print('Process id:', os.getpid(), ' === PowerTOP ===')
+	print('Process id:', os.getpid(), ' === Start PowerTOP ===')
 	index = 1
 	try:
 		while True:
@@ -115,9 +114,8 @@ def powertop():
 			# datetime object containing current date and time
 			now = datetime.now()
 			# dd/mm/YY H:M:S
-			dt_string = now.strftime("%d-%m %H:%M:%S")
-			for x in dt_string.split(' '):
-				row.append(x.strip())
+			dt_string = now.strftime("%H:%M:%S")
+			row.append(dt_string.strip())
 			#power est.
 			res1, res2 = power_est(powertop)
 			if res1 != 'error' and res2 != 'error':
@@ -127,12 +125,13 @@ def powertop():
 			print(index, " : ", row)
 			index = index + 1
 	except KeyboardInterrupt:
+		print('Process id:', os.getpid(), ' === Stop PowerTOP ===')
 		f.close()
 
 def dstat():
 	f, writer = init_csv_dstat()
 	dstat = init_dstat()
-	print('Process id:', os.getpid(), ' === dstat ===')
+	print('Process id:', os.getpid(), ' === Start dstat ===')
 	index = 1
 	temp = re.compile("([0-9]+)([a-zA-Z]+)")
 	try:
@@ -163,12 +162,20 @@ def dstat():
 					print(index, " : ", row)
 					index = index + 1
 	except KeyboardInterrupt:
+		print('Process id:', os.getpid(), ' === Stop dstat ===')
 		dstat.poll()
 		f.close()
 
 
 if __name__ == "__main__":
-    p_pt = Process(target=powertop)
-    p_d = Process(target=dstat)
-    p_pt.start()
-    p_d.start()
+    try:
+        p_pt = Process(target=powertop)
+        p_d = Process(target=dstat)
+        p_pt.start()
+        p_d.start()
+        p_pt.join()
+        p_d.join()
+    except KeyboardInterrupt:
+        print("-----------------------------------------")
+        process = subprocess.Popen(shlex.split('make merge'), stdout=subprocess.PIPE)
+        print("The output is in the output directory")
