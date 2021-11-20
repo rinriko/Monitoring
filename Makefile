@@ -23,6 +23,8 @@ help:
 	@echo "To merge csv files: dstat and powertop type 'make merge'"
 	@echo "------------------------------------"
 
+all: init setup monitor
+
 merge:
 	${PYTHON} merge.py
 
@@ -34,6 +36,3 @@ setup:
 
 init:
 	${INIT} powertop dstat python3-pip
-
-all:
-	init setup monitor merge
