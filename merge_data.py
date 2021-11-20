@@ -8,6 +8,8 @@ data2 = pd.read_csv('powertop/monitor_powertop_data.csv')
 output = pd.merge(data1, data2, 
                    on='time', 
                    how='left').fillna('')
-  
+
 # displaying result
 print(output)
+# save result
+output.to_csv('output/output.csv', index=False)
