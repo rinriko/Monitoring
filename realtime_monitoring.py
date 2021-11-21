@@ -179,7 +179,7 @@ def merge_data():
     # displaying result
     print(output)
     # save result
-    output.to_csv('output/output.csv', index=False)
+    output.to_csv('output/monitoring.csv', index=False)
 
 if __name__ == "__main__":
     try:

@@ -181,7 +181,7 @@ def merge_data(data_dstat, data_powertop):
 	# displaying result
 	print(output)
 	# save result
-	output.to_csv('output/output.csv', index=False)
+	output.to_csv('output/monitoring_ransomware.csv', index=False)
 
 data_dstat = []
 data_powertop = []
