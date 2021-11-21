@@ -198,6 +198,8 @@ if __name__ == "__main__":
         	p_dstat.join()
         	p_powertop.join()
         except KeyboardInterrupt:
+        	while p_powertop.is_alive() and p_dstat.is_alive():
+        	    pass
         	print("-----------------------------------------")
         	data_dstat = list(data_dstat)
         	data_powertop = list(data_powertop)

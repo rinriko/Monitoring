@@ -170,13 +170,11 @@ def dstat():
 
 def merge_data():
     # reading csv files
-    data1 = pd.read_csv('dstat/monitor_dstat_data.csv')
-    data2 = pd.read_csv('powertop/monitor_powertop_data.csv')
+    df_dstat = pd.read_csv('dstat/monitor_dstat_data.csv')
+    df_powertop = pd.read_csv('powertop/monitor_powertop_data.csv')
     
     # using merge function by setting how='left'
-    output = pd.merge(data1, data2, 
-                    on=['date', 'time'], 
-                    how='left').fillna('')
+    output = pd.merge(df_dstat, df_powertop, on=['date', 'time'], how='left').fillna('')
 
     # displaying result
     print(output)
@@ -185,13 +183,15 @@ def merge_data():
 
 if __name__ == "__main__":
     try:
-        p_pt = Process(target=powertop)
-        p_d = Process(target=dstat)
-        p_pt.start()
-        p_d.start()
-        p_pt.join()
-        p_d.join()
+        p_powertop = Process(target=powertop)
+        p_dstat = Process(target=dstat)
+        p_powertop.start()
+        p_dstat.start()
+        p_powertop.join()
+        p_dstat.join()
     except KeyboardInterrupt:
+        while p_powertop.is_alive() and p_dstat.is_alive():
+                pass
         print("-----------------------------------------")
         merge_data()
         print("the output is in the directory named 'output'")
