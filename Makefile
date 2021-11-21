@@ -20,7 +20,7 @@ help:
 	@echo "To first init the project type 'make init'"
 	@echo "To set up the project type 'make setup'"
 	@echo "To run real-time monitoring type 'make monitor'"
-	@echo "To merge csv files: dstat and powertop type 'make merge'"
+	@echo "To run real-time monitoring for ransomware type 'make monitor_ransomware'"
 	@echo "------------------------------------"
 
 all: init setup monitor
