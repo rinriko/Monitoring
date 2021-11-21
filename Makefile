@@ -8,7 +8,7 @@ INIT = sudo apt-get install
 
 # .PHONY defines parts of the makefile that are not dependant on any specific file
 # This is most often used to store functions
-.PHONY = help init setup monitor merge all
+.PHONY = help init setup monitor all
 
 # Defines the default target that `make` will to try to make, or in the case of a phony target, execute the specified commands
 # This target is executed whenever we just type `make`
@@ -24,9 +24,6 @@ help:
 	@echo "------------------------------------"
 
 all: init setup monitor
-
-merge:
-	${PYTHON} merge_data.py
 
 monitor:
 	${PYTHON} realtime_monitoring.py

@@ -6,6 +6,7 @@ from multiprocessing import Process
 from datetime import datetime
 import re
 import os
+import pandas as pd
 
 def init_csv_dstat():
 	subheader = ['date', 'time', 'cpu.usr', 'cpu.sys', 'cpu.idl', 'cpu.wait', 'cpu.stl', 'memory.used', 'memory.free', 'memory.buff', 'memory.cach', 'dsk/total.read', 'dsk/total.write', 'io/total.read', 'io/total.write']
@@ -167,6 +168,20 @@ def dstat():
 		dstat.poll()
 		f.close()
 
+def merge_data():
+    # reading csv files
+    data1 = pd.read_csv('dstat/monitor_dstat_data.csv')
+    data2 = pd.read_csv('powertop/monitor_powertop_data.csv')
+    
+    # using merge function by setting how='left'
+    output = pd.merge(data1, data2, 
+                    on=['date', 'time'], 
+                    how='left').fillna('')
+
+    # displaying result
+    print(output)
+    # save result
+    output.to_csv('output/output.csv', index=False)
 
 if __name__ == "__main__":
     try:
@@ -178,5 +193,5 @@ if __name__ == "__main__":
         p_d.join()
     except KeyboardInterrupt:
         print("-----------------------------------------")
-        process = subprocess.Popen(shlex.split('make merge'), stdout=subprocess.PIPE)
+        merge_data()
         print("the output is in the directory named 'output'")
