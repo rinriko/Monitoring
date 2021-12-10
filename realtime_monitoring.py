@@ -135,7 +135,7 @@ def dstat():
 	dstat = init_dstat()
 	print('Process id:', os.getpid(), ' === Start dstat ===')
 	index = 1
-	temp = re.compile("([0-9]+)([a-zA-Z]+)")
+	temp = re.compile("([0-9]*[.]{0,1}[0-9]*)([a-zA-Z]+)")
 	try:
 		while True:
 			row = []
