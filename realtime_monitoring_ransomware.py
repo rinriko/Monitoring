@@ -264,14 +264,14 @@ if __name__ == "__main__":
         	p_ransomware = Process(target=ransomware, args=(data_ransomware,))
         	p_dstat.start()
         	p_powertop.start()
-        	p_dstat.join()
-        	p_powertop.join()
         	time.sleep(30)
         	p_ransomware.start()
-        	# p_ransomware.join()
         	while p_ransomware.is_alive():
         	    print("alive")
         	    pass
+        	# # p_ransomware.join()
+        	# p_dstat.join()
+        	# p_powertop.join()
         	os.kill(signal.SIGINT, 0)
         except KeyboardInterrupt:
         	while p_powertop.is_alive() and p_dstat.is_alive():
