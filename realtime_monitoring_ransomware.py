@@ -33,6 +33,19 @@ def init_csv_powertop():
 	writer.writerow(subheader)
 	return file, writer
 
+def init_csv_ransomware():
+	subheader = ['date', 'time', 'is_attacked']
+	#header = ['System', '', 'is_attacked']
+
+	# open the file in the write mode
+	file = open('ransomware/monitor_ransomware_data.csv', 'w')
+
+	# create the csv writer
+	writer = csv.writer(file)
+	#writer.writerow(header)
+	writer.writerow(subheader)
+	return file, writer
+
 def init_powertop():
 	child = pexpect.spawnu('sudo powertop')
 	child.expect('password')
@@ -48,6 +61,12 @@ def init_powertop():
 def init_dstat():
 	# system time, total-cpu-usage, dsk/total, io/total
 	command = "dstat -tcmdr" 
+	process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
+	return process
+
+def init_ransomware():
+	# system time, total-cpu-usage, dsk/total, io/total
+	command = "python3 -m ../ransomware/payload_fast.py" 
 	process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
 	return process
 
@@ -103,6 +122,39 @@ def compute_unit(res,unit):
 		value = pow(10,12)
 	res = float(res) * value
 	return res
+
+def ransomware(data_ransomware):
+	index = 1
+	print('Process id:', os.getpid(), ' === Start Ransomware ===')
+	f, writer = init_csv_ransomware()
+	try:
+		row = []
+		# datetime object containing current date and time
+		now = datetime.now()
+		# dd/mm/YY H:M:S
+		dt_string = now.strftime("%d-%m %H:%M:%S")
+		for x in dt_string.split(' '):
+			row.append(x.strip())
+		row.append('True')
+		writer.writerow(row)
+		data_ransomware.append(row)
+		print(index, " : ", row)
+		index = index + 1
+		ran = init_ransomware()
+		# datetime object containing current date and time
+		now = datetime.now()
+		# dd/mm/YY H:M:S
+		dt_string = now.strftime("%d-%m %H:%M:%S")
+		for x in dt_string.split(' '):
+			row.append(x.strip())
+		row.append('True')
+		writer.writerow(row)
+		data_ransomware.append(row)
+		print(index, " : ", row)
+	except KeyboardInterrupt:
+		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
+		ran.poll()
+		f.close()
 
 def powertop(data_powertop):
 	f, writer = init_csv_powertop()
@@ -170,14 +222,18 @@ def dstat(data_dstat):
 		dstat.poll()
 		f.close()
 
-def merge_data(data_dstat, data_powertop):
+def merge_data(data_dstat, data_powertop, data_ransomware):
 	# reading csv files
 	#data1 = pd.read_csv('dstat/monitor_dstat_data.csv')
 	#data2 = pd.read_csv('powertop/monitor_powertop_data.csv')
 	df_dstat = pd.DataFrame(data_dstat, columns=['date', 'time', 'cpu.usr', 'cpu.sys', 'cpu.idl', 'cpu.wait', 'cpu.stl', 'memory.used', 'memory.free', 'memory.buff', 'memory.cach', 'dsk/total.read', 'dsk/total.write', 'io/total.read', 'io/total.write'])
 	df_powertop = pd.DataFrame(data_powertop, columns=['date', 'time', 'power est.'])
+	df_ransomware = pd.DataFrame(data_powertop, columns=['date', 'time', 'is_attacked'])
 	# using merge function by setting how='left'
-	output = pd.merge(df_dstat, df_powertop, on=['date', 'time'], how='left').fillna('')
+	output_dstat_n_powertop = pd.merge(df_dstat, df_powertop, on=['date', 'time'], how='left').fillna('')
+	output = pd.merge(output_dstat_n_powertop, df_ransomware, on=['date', 'time'], how='left').fillna('')
+	last = output['is_attacked'].last_valid_index()
+	output['is_attacked'].loc[:last] = output['is_attacked'].loc[:last].ffill()
 	# displaying result
 	print(output)
 	# save result
@@ -185,12 +241,14 @@ def merge_data(data_dstat, data_powertop):
 
 data_dstat = []
 data_powertop = []
+data_ransomware = []
 
 if __name__ == "__main__":
     with Manager() as manager:
         try:
         	data_dstat = manager.list()
         	data_powertop = manager.list()
+			data_ransomware = manager.list()
         	p_dstat = Process(target=dstat, args=(data_dstat,))
         	p_powertop = Process(target=powertop, args=(data_powertop,))
         	p_dstat.start()
@@ -203,5 +261,6 @@ if __name__ == "__main__":
         	print("-----------------------------------------")
         	data_dstat = list(data_dstat)
         	data_powertop = list(data_powertop)
-        	merge_data(data_dstat, data_powertop)
+			data_ransomware = list(data_ransomware)
+        	merge_data(data_dstat, data_powertop, data_ransomware)
         	print("the output is in the directory named 'output'")
