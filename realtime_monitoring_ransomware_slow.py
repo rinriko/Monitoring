@@ -67,7 +67,7 @@ def init_dstat():
 
 def init_ransomware():
 	# system time, total-cpu-usage, dsk/total, io/total
-	command = "python3 ../ransomware/payload_slow.py" 
+	command = "python3 ../ransomware/pyload_slow.py" 
 	process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
 	return process
 
@@ -145,6 +145,7 @@ def ransomware(data_ransomware):
 		# ==================================================================================================
 		ran = init_ransomware()
 		while True:
+			print('Process id:', os.getpid(), ' ------ Ransomware still working ------- ')
 			ran_output = ran.stdout.readline()
 			if ran_output.strip().decode("utf-8") == '' and ran.poll() is not None:
 				break
