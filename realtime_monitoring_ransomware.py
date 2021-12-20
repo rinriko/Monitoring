@@ -257,7 +257,7 @@ if __name__ == "__main__":
         	p_powertop.start()
         	p_dstat.join()
         	p_powertop.join()
-			time.sleep(30)
+        	time.sleep(30)
         	p_pransomware.start()
         	p_pransomware.join()
 
