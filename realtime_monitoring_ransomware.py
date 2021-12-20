@@ -145,9 +145,9 @@ def ransomware(data_ransomware):
 		# ==================================================================================================
 		ran = init_ransomware()
 		while True:
-		ran_output = ran.stdout.readline()
-			if ran_output == '' and ran.poll() is not None:
-				break
+			ran_output = ran.stdout.readline()
+				if ran_output == '' and ran.poll() is not None:
+					break
 		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
