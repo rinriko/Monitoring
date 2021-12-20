@@ -144,6 +144,11 @@ def ransomware(data_ransomware):
 		row = []
 		# ==================================================================================================
 		ran = init_ransomware()
+		while True:
+		ran_output = ran.stdout.readline()
+			if ran_output == '' and ran.poll() is not None:
+				break
+		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
 		now = datetime.now()
@@ -156,7 +161,7 @@ def ransomware(data_ransomware):
 		data_ransomware.append(row)
 		print(index, " : ", row)
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
-		ran.poll()
+		
 		f.close()
 	except KeyboardInterrupt:
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
