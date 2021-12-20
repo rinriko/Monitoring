@@ -146,7 +146,7 @@ def ransomware(data_ransomware):
 		ran = init_ransomware()
 		while True:
 			ran_output = ran.stdout.readline()
-			if ran_output == '' and ran.poll() is not None:
+			if ran_output.strip().decode("utf-8") == '' and ran.poll() is not None:
 				break
 			print(ran_output)
 		ran.poll()
@@ -206,7 +206,7 @@ def dstat(data_dstat):
 		while True:
 			row = []
 			dstat_output = dstat.stdout.readline()
-			if dstat_output == '' and dstat.poll() is not None:
+			if dstat_output.strip().decode("utf-8") == '' and dstat.poll() is not None:
 				break
 			if dstat_output:
 				if "system" not in dstat_output.strip().decode("utf-8") and "time" not in dstat_output.strip().decode("utf-8"):
