@@ -6,7 +6,6 @@ from multiprocessing import Process, Manager
 from datetime import datetime
 import re
 import os
-import signal
 import pandas as pd
 import time
 
@@ -145,7 +144,6 @@ def ransomware(data_ransomware):
 		row = []
 		# ==================================================================================================
 		ran = init_ransomware()
-		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
 		now = datetime.now()
@@ -158,9 +156,8 @@ def ransomware(data_ransomware):
 		data_ransomware.append(row)
 		print(index, " : ", row)
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
-		
+		ran.poll()
 		f.close()
-		# time.sleep(5)
 	except KeyboardInterrupt:
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
 		ran.poll()
@@ -266,13 +263,10 @@ if __name__ == "__main__":
         	p_powertop.start()
         	time.sleep(30)
         	p_ransomware.start()
-        	while p_ransomware.is_alive():
-        	    print("alive")
-        	    pass
-        	# # p_ransomware.join()
-        	# p_dstat.join()
-        	# p_powertop.join()
-        	os.kill(signal.SIGINT, 0)
+        	p_ransomware.join()
+        	p_dstat.join()
+        	p_powertop.join()
+
         except KeyboardInterrupt:
         	while p_powertop.is_alive() and p_dstat.is_alive():
         	    pass
