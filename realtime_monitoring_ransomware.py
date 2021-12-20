@@ -248,7 +248,7 @@ if __name__ == "__main__":
         try:
         	data_dstat = manager.list()
         	data_powertop = manager.list()
-			data_ransomware = manager.list()
+        	data_ransomware = manager.list()
         	p_dstat = Process(target=dstat, args=(data_dstat,))
         	p_powertop = Process(target=powertop, args=(data_powertop,))
         	p_dstat.start()
