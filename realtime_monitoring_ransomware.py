@@ -145,6 +145,7 @@ def ransomware(data_ransomware):
 		row = []
 		# ==================================================================================================
 		ran = init_ransomware()
+		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
 		now = datetime.now()
@@ -157,10 +158,9 @@ def ransomware(data_ransomware):
 		data_ransomware.append(row)
 		print(index, " : ", row)
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
-		ran.poll()
+		
 		f.close()
 		time.sleep(5)
-		os.kill(signal.SIGINT, 0)
 	except KeyboardInterrupt:
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
 		ran.poll()
@@ -269,7 +269,9 @@ if __name__ == "__main__":
         	p_ransomware.join()
         	p_dstat.join()
         	p_powertop.join()
-
+        	while p_ransomware():
+        	    pass
+        	os.kill(signal.SIGINT, 0)
         except KeyboardInterrupt:
         	while p_powertop.is_alive() and p_dstat.is_alive():
         	    pass
