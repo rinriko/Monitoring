@@ -141,7 +141,10 @@ def ransomware(data_ransomware):
 		data_ransomware.append(row)
 		print(index, " : ", row)
 		index = index + 1
+		row = []
+		# ==================================================================================================
 		ran = init_ransomware()
+		# ==================================================================================================
 		# datetime object containing current date and time
 		now = datetime.now()
 		# dd/mm/YY H:M:S
@@ -232,7 +235,7 @@ def merge_data(data_dstat, data_powertop, data_ransomware):
 	#data2 = pd.read_csv('powertop/monitor_powertop_data.csv')
 	df_dstat = pd.DataFrame(data_dstat, columns=['date', 'time', 'cpu.usr', 'cpu.sys', 'cpu.idl', 'cpu.wait', 'cpu.stl', 'memory.used', 'memory.free', 'memory.buff', 'memory.cach', 'dsk/total.read', 'dsk/total.write', 'io/total.read', 'io/total.write'])
 	df_powertop = pd.DataFrame(data_powertop, columns=['date', 'time', 'power est.'])
-	df_ransomware = pd.DataFrame(data_powertop, columns=['date', 'time', 'is_attacked'])
+	df_ransomware = pd.DataFrame(data_ransomware, columns=['date', 'time', 'is_attacked'])
 	# using merge function by setting how='left'
 	output_dstat_n_powertop = pd.merge(df_dstat, df_powertop, on=['date', 'time'], how='left').fillna('')
 	output = pd.merge(output_dstat_n_powertop, df_ransomware, on=['date', 'time'], how='left').fillna('')
