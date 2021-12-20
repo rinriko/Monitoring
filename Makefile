@@ -2,8 +2,8 @@
 
 # Signifies our desired python version
 # Makefile macros (or variables) are defined a little bit differently than traditional bash, keep in mind that in the Makefile there's top-level Makefile-only syntax, and everything else is bash script syntax.
-PYTHON = sudo python3
-INSTALL_PY = sudo python3 -m pip install
+PYTHON = python3
+INSTALL_PY = python3 -m pip install
 INIT = sudo apt-get install
 
 # .PHONY defines parts of the makefile that are not dependant on any specific file
