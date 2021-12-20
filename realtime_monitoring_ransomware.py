@@ -148,6 +148,7 @@ def ransomware(data_ransomware):
 			ran_output = ran.stdout.readline()
 			if ran_output == '' and ran.poll() is not None:
 				break
+			print(ran_output)
 		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
