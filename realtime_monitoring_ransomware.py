@@ -269,7 +269,7 @@ if __name__ == "__main__":
         	p_ransomware.join()
         	p_dstat.join()
         	p_powertop.join()
-        	while p_ransomware():
+        	while p_ransomware.is_alive():
         	    pass
         	os.kill(signal.SIGINT, 0)
         except KeyboardInterrupt:
