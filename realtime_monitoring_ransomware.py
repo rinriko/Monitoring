@@ -266,7 +266,7 @@ if __name__ == "__main__":
         	p_powertop.start()
         	time.sleep(30)
         	p_ransomware.start()
-        	p_ransomware.join()
+        	# p_ransomware.join()
         	p_dstat.join()
         	p_powertop.join()
         	while p_ransomware.is_alive():
