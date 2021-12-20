@@ -125,7 +125,7 @@ def compute_unit(res,unit):
 	res = float(res) * value
 	return res
 
-def ransomware(data_ransomware):
+def ransomware(data_ransomware,current_thread_id):
 	index = 1
 	print('Process id:', os.getpid(), ' === Start Ransomware ===')
 	f, writer = init_csv_ransomware()
@@ -160,7 +160,7 @@ def ransomware(data_ransomware):
 		ran.poll()
 		f.close()
 		time.sleep(5)
-		os.kill(signal.CTRL_C_EVENT, 0)
+		signal.pthread_kill(current_thread_id, signal.SIGKILL)
 	except KeyboardInterrupt:
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
 		ran.poll()
@@ -259,9 +259,10 @@ if __name__ == "__main__":
         	data_dstat = manager.list()
         	data_powertop = manager.list()
         	data_ransomware = manager.list()
+        	current_thread_id = os.getpid()
         	p_dstat = Process(target=dstat, args=(data_dstat,))
         	p_powertop = Process(target=powertop, args=(data_powertop,))
-        	p_ransomware = Process(target=ransomware, args=(data_ransomware,))
+        	p_ransomware = Process(target=ransomware, args=(data_ransomware,current_thread_id,))
         	p_dstat.start()
         	p_powertop.start()
         	time.sleep(30)
