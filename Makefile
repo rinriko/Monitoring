@@ -8,7 +8,7 @@ INIT = sudo apt-get install
 
 # .PHONY defines parts of the makefile that are not dependant on any specific file
 # This is most often used to store functions
-.PHONY = help init setup monitor monitor_ransomware all
+.PHONY = help init setup monitor monitor_ransomware_fast monitor_ransomware_slow all
 
 # Defines the default target that `make` will to try to make, or in the case of a phony target, execute the specified commands
 # This target is executed whenever we just type `make`
@@ -20,12 +20,16 @@ help:
 	@echo "To first init the project type 'make init'"
 	@echo "To set up the project type 'make setup'"
 	@echo "To run real-time monitoring type 'make monitor'"
-	@echo "To run real-time monitoring for ransomware type 'make monitor_ransomware'"
+	@echo "To run real-time monitoring for fast ransomware type 'make monitor_ransomware_fast'"
+	@echo "To run real-time monitoring for slow ransomware type 'make monitor_ransomware_slow'"
 	@echo "------------------------------------"
 
 all: init setup monitor
 
-monitor_ransomware:
+monitor_ransomware_fast:
+	${PYTHON} realtime_monitoring_ransomware.py
+
+monitor_ransomware_slow:
 	${PYTHON} realtime_monitoring_ransomware.py
 
 monitor:
