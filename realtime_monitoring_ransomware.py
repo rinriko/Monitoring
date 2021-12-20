@@ -67,7 +67,7 @@ def init_dstat():
 
 def init_ransomware():
 	# system time, total-cpu-usage, dsk/total, io/total
-	command = "python3 -m ../ransomware/payload_fast.py" 
+	command = "python3 ../ransomware/payload_fast.py" 
 	process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE)
 	return process
 
@@ -255,11 +255,11 @@ if __name__ == "__main__":
         	p_pransomware = Process(target=ransomware, args=(data_ransomware,))
         	p_dstat.start()
         	p_powertop.start()
-        	p_dstat.join()
-        	p_powertop.join()
         	time.sleep(30)
         	p_pransomware.start()
         	p_pransomware.join()
+        	p_dstat.join()
+        	p_powertop.join()
 
         except KeyboardInterrupt:
         	while p_powertop.is_alive() and p_dstat.is_alive():
