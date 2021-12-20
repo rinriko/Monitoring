@@ -160,7 +160,7 @@ def ransomware(data_ransomware):
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
 		
 		f.close()
-		time.sleep(5)
+		# time.sleep(5)
 	except KeyboardInterrupt:
 		print('Process id:', os.getpid(), ' === Stop Ransomware ===')
 		ran.poll()
@@ -270,6 +270,7 @@ if __name__ == "__main__":
         	p_dstat.join()
         	p_powertop.join()
         	while p_ransomware.is_alive():
+				print("alive")
         	    pass
         	os.kill(signal.SIGINT, 0)
         except KeyboardInterrupt:
