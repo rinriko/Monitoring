@@ -149,7 +149,8 @@ def ransomware(data_ransomware):
 			ran_output = ran.stdout.readline()
 			if ran_output.strip().decode("utf-8") == '' and ran.poll() is not None:
 				break
-			print(ran_output)
+			if ran_output:
+				print(ran_output)
 		ran.poll()
 		# ==================================================================================================
 		# datetime object containing current date and time
