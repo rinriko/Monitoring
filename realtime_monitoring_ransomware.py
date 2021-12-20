@@ -261,6 +261,6 @@ if __name__ == "__main__":
         	print("-----------------------------------------")
         	data_dstat = list(data_dstat)
         	data_powertop = list(data_powertop)
-			data_ransomware = list(data_ransomware)
+        	data_ransomware = list(data_ransomware)
         	merge_data(data_dstat, data_powertop, data_ransomware)
         	print("the output is in the directory named 'output'")
