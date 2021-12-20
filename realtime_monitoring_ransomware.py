@@ -7,6 +7,7 @@ from datetime import datetime
 import re
 import os
 import pandas as pd
+import time
 
 def init_csv_dstat():
 	subheader = ['date', 'time', 'cpu.usr', 'cpu.sys', 'cpu.idl', 'cpu.wait', 'cpu.stl', 'memory.used', 'memory.free', 'memory.buff', 'memory.cach', 'dsk/total.read', 'dsk/total.write', 'io/total.read', 'io/total.write']
@@ -251,10 +252,15 @@ if __name__ == "__main__":
         	data_ransomware = manager.list()
         	p_dstat = Process(target=dstat, args=(data_dstat,))
         	p_powertop = Process(target=powertop, args=(data_powertop,))
+        	p_pransomware = Process(target=ransomware, args=(data_ransomware,))
         	p_dstat.start()
         	p_powertop.start()
         	p_dstat.join()
         	p_powertop.join()
+			time.sleep(30)
+        	p_pransomware.start()
+        	p_pransomware.join()
+
         except KeyboardInterrupt:
         	while p_powertop.is_alive() and p_dstat.is_alive():
         	    pass
