@@ -27,10 +27,10 @@ help:
 all: init setup monitor
 
 monitor_ransomware_fast:
-	${PYTHON} realtime_monitoring_ransomware.py
+	${PYTHON} realtime_monitoring_ransomware_fast.py
 
 monitor_ransomware_slow:
-	${PYTHON} realtime_monitoring_ransomware.py
+	${PYTHON} realtime_monitoring_ransomware_slow.py
 
 monitor:
 	${PYTHON} realtime_monitoring.py
